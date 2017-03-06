@@ -50,6 +50,7 @@ Options:
   --collectionname=string      Name of the collection. By default the same as the input file.
   --aoibyrank                  Add columns for each AOI for each rank. Columns will be named Name_Rank. [default: False]
   --addtiming                  Add a column for each epoch, containing time spent in that stimulus epoch, as indicated in the timingfile. [default: False]
+  --zero                       Timing file has been zeroed at the beginning of each trial. [default: False]
   --recenterby=epoch           Epoch (e.g. Fixation) to use in determing center for the rest of the stimulus. [default: Fixation]
 
 Input (GazeData) File:
@@ -188,6 +189,10 @@ def clean(rawarguments):
             cleanedarguments["AOIBYRANK"] = False
         else:
             cleanedarguments["AOIBYRANK"] = True
+        if rawarguments["--zero"] == False or rawarguments["--zero"] == "False":
+            cleanedarguments["TIMINGZEROED"] = False
+        else:
+            cleanedarguments["TIMINGZEROED"] = True
 
     if cleanedarguments["COMMAND"] == "Convert":
 
@@ -239,7 +244,7 @@ def process(arguments):
         timingval = None
 
     #Get a gaze object
-    gaze = Gaze(arguments["GAZEFRAME"], arguments["SCREEN"], timing=timingval, hertz=arguments["HERTZ"], yflip=arguments["YFLIP"], xflip=arguments["XFLIP"])
+    gaze = Gaze(arguments["GAZEFRAME"], arguments["SCREEN"], timing=timingval, hertz=arguments["HERTZ"], yflip=arguments["YFLIP"], xflip=arguments["XFLIP"], zero=arguments["TIMINGZEROED"])
 
     #Loop over AOIs
     for image in sorted(images):
